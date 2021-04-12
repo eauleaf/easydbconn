@@ -1,0 +1,27 @@
+Package: easydbconn
+Title: Simplified Communication with Databases
+Version: 0.0.0.9000
+Authors@R:
+    person("eau", "leaf", email = "eau.leaf@gmail.com", role = c("aut", "cre"))
+Description: Uses a primary function, get_data(), to generally query available
+    databases. save_table() writes a df to a specified database.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Imports: 
+ magrittr (>= 2.0.1),
+ dplyr (>= 1.0.5),
+ utils (>= 4.0.4),
+ DBI (>= 1.1.1),
+ data.table (>= 1.14.0),
+ glue (>= 1.4.2),
+ lubridate (>= 1.7.10),
+ odbc (>= 1.3.1),
+ purrr (>= 0.3.4),
+ stringr (>= 1.4.0),
+ readr (>= 1.4.0)
+Suggests:
+  ROracle
+URL: https://github.com/eauleaf/easydbconn
+BugReports: https://github.com/eauleaf/easydbconn/issues
