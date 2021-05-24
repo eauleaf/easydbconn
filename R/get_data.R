@@ -26,22 +26,26 @@ get_data <- function(query,
 
   dur <- transfer_message_beg()
 
-  # determine if ssms or oracle
-  systyp <- Sys.getenv(paste0(friendly_db_name, "_systyp"))
 
   # get connection (if not passed into function)
   if(is.null(con)){
     con <- get_db_con(friendly_db_name)
+
+    # determine if ssms or oracle
+    systyp <- Sys.getenv(paste0(friendly_db_name, "_systyp"))
+
+  } else {
+    systyp <- con@info$dbms.name
   }
 
   ### query results
   # msft sql server
-  if (systyp == "ssms") {
+  if (systyp %in% c("ssms", "Microsoft SQL Server")) {
     query_results <- DBI::dbGetQuery(con, query)
     DBI::dbDisconnect(con)
   }
   # oracle
-  else if (systyp == "oracle") {
+  else if (systyp %in% c("oracle", "Oracle")) {
     query_results <- ROracle::dbGetQuery(con, query)
     ROracle::dbDisconnect(con)
   }

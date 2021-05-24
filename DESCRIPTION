@@ -1,6 +1,6 @@
 Package: easydbconn
 Title: Simplified Communication with Databases
-Version: 0.0.1.0000
+Version: 0.0.1.0001
 Authors@R:
     person("eau", "leaf", email = "eau.leaf@gmail.com", role = c("aut", "cre"))
 Description: Uses a primary function, get_data(), to generally query available
