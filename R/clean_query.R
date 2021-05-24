@@ -7,8 +7,8 @@
 #' @importFrom magrittr %>%
 #' @export
 #'
-#' @examples clean_query('select * from  tbl --example comment')
-clean_query <- function(query){
+#' @examples clean_query("select * from  tbl --example comment")
+clean_query <- function(query) {
 
 
   # echo original query to the console
@@ -18,16 +18,13 @@ clean_query <- function(query){
   # return
   query %>%
     # remove all demarked /*  */ sql comments
-    gsub(pattern = '/\\*.*?\\*/', replacement = ' ') %>%
+    gsub(pattern = "/\\*.*?\\*/", replacement = " ") %>%
     # remove all demarked -- comments
-    gsub(pattern = '--[^\r\n]*', replacement = ' ') %>%
+    gsub(pattern = "--[^\r\n]*", replacement = " ") %>%
     # remove everything after the query-end semicolon
-    gsub(pattern = ';.*', replacement = ' ') %>%
-    #remove any line break, tab, etc.
-    gsub(pattern = '[\r\n\t\f\v]', replacement = ' ') %>%
+    gsub(pattern = ";.*", replacement = " ") %>%
+    # remove any line break, tab, etc.
+    gsub(pattern = "[\r\n\t\f\v]", replacement = " ") %>%
     # remove extra whitespace
-    gsub(pattern = ' +', replacement = ' ')
-
-
+    gsub(pattern = " +", replacement = " ")
 }
-

@@ -9,18 +9,14 @@
 #' @importFrom stringr str_detect
 #'
 #' @export
-read_query <- function(query){
+read_query <- function(query) {
 
   # if sql path, read, otherwise assume text input
-  if(stringr::str_detect(query, "(?i)\\.(sql|txt|r)$") ){
-
-    query %>% readr::read_lines() %>% paste(collapse = "\n")
-
+  if (stringr::str_detect(query, "(?i)\\.(sql|txt|r)$")) {
+    query %>%
+      readr::read_lines() %>%
+      paste(collapse = "\n")
   } else {
-
     query
-
   }
-
-
 }

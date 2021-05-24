@@ -16,5 +16,5 @@ a single line of query text
 removes sql comments and prepares a human-readable query
 }
 \examples{
-clean_query('select * from  tbl --example comment')
+clean_query("select * from  tbl --example comment")
 }

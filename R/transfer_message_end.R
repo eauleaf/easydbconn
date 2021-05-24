@@ -9,10 +9,8 @@
 #'
 #' @export
 #' @examples transfer_message_end(transfer_message_beg())
-transfer_message_end <- function(dur){
-
+transfer_message_end <- function(dur) {
   cat("---------Done Transferring Data---------\n")
   utils::timestamp()
-  cat('\nTime required to perform task:', data.table::timetaken(dur), '\n\n')
-
+  cat("\nTime required to perform task:", data.table::timetaken(dur), "\n\n")
 }

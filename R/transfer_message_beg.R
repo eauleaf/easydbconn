@@ -6,11 +6,8 @@
 #'
 #' @export
 #' @examples easydbconn::transfer_message_beg()
-transfer_message_beg <- function(){
-
+transfer_message_beg <- function() {
   cat("---------Beginning Data Transfer---------\n")
   utils::timestamp()
   proc.time()
-
 }
-

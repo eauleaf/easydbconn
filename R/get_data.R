@@ -10,10 +10,10 @@
 #' @importFrom purrr modify_if
 #'
 #' @export
-get_data <- function(query
-                     ,friendly_db_name
-                     ,cast_as_tibble = TRUE
-                     ,simplify_dates = TRUE){
+get_data <- function(query,
+                     friendly_db_name,
+                     cast_as_tibble = TRUE,
+                     simplify_dates = TRUE) {
 
   # prep query
   cleaned_query <-
@@ -25,23 +25,20 @@ get_data <- function(query
   dur <- transfer_message_beg()
 
   # determine if ssms or oracle
-  systyp <- Sys.getenv(paste0(friendly_db_name,"_systyp"))
+  systyp <- Sys.getenv(paste0(friendly_db_name, "_systyp"))
   # get connection
   con <- get_db_con(friendly_db_name)
 
   ### query results
   # msft sql server
-  if(systyp == "ssms"){
-
+  if (systyp == "ssms") {
     query_results <- DBI::dbGetQuery(con, query)
     DBI::dbDisconnect(con)
   }
   # oracle
-  else if(systyp == "oracle"){
-
+  else if (systyp == "oracle") {
     query_results <- ROracle::dbGetQuery(con, query)
     ROracle::dbDisconnect(con)
-
   }
 
   transfer_message_end(dur)
@@ -53,6 +50,4 @@ get_data <- function(query
 
 
   return(query_results)
-
-
 }
