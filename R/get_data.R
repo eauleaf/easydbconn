@@ -4,6 +4,7 @@
 #' @param friendly_db_name specify a database name; connection parameters retrieved for db in `get_db_con()`
 #' @param cast_as_tibble make the output a tibble
 #' @param simplify_dates transform all dates in returned table from datetime to just date
+#' @param con pass in connection string if created elsewhere (this is optional)
 #'
 #' @return a table of data output specified by the query
 #'
@@ -13,7 +14,8 @@
 get_data <- function(query,
                      friendly_db_name,
                      cast_as_tibble = TRUE,
-                     simplify_dates = TRUE) {
+                     simplify_dates = TRUE,
+                     con = NULL) {
 
   # prep query
   cleaned_query <-
@@ -26,8 +28,11 @@ get_data <- function(query,
 
   # determine if ssms or oracle
   systyp <- Sys.getenv(paste0(friendly_db_name, "_systyp"))
-  # get connection
-  con <- get_db_con(friendly_db_name)
+
+  # get connection (if not passed into function)
+  if(is.null(con)){
+    con <- get_db_con(friendly_db_name)
+  }
 
   ### query results
   # msft sql server
