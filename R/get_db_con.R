@@ -11,7 +11,7 @@
 #'
 #' @export
 #'
-get_db_con <- function(friendly_db_name) {
+get_db_con <- function(friendly_db_name, schema = NULL) {
 
   # determine if ssms or oracle
   systyp <- Sys.getenv(paste0(friendly_db_name, "_systyp"))
@@ -38,7 +38,10 @@ get_db_con <- function(friendly_db_name) {
                           Database = Sys.getenv(paste0(friendly_db_name, "_db")),
                           UID = Sys.getenv(paste0(friendly_db_name, "_username")),
                           PWD = Sys.getenv(paste0(friendly_db_name, "_password")),
-                          Warehouse = Sys.getenv(paste0(friendly_db_name, "_wh"))
+                          Warehouse = Sys.getenv(paste0(friendly_db_name, "_wh")),
+                          Schema = toupper(schema),
+                          LogLevel = 0,
+                          tracing = 0
     )
   }
 
