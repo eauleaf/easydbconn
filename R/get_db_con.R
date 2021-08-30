@@ -21,12 +21,24 @@ get_db_con <- function(friendly_db_name) {
   # msft sql server
   if (systyp == "ssms") {
     con <- DBI::dbConnect(odbc::odbc(),
-      Driver = Sys.getenv("ssms_driver"),
-      Server = Sys.getenv(paste0(friendly_db_name, "_server")),
-      Database = Sys.getenv(paste0(friendly_db_name, "_db")),
-      UID = Sys.getenv(paste0(friendly_db_name, "_username")),
-      PWD = Sys.getenv(paste0(friendly_db_name, "_password")),
-      Port = as.numeric(Sys.getenv(paste0(friendly_db_name, "ssms_port")))
+                          Driver = Sys.getenv("ssms_driver"),
+                          Server = Sys.getenv(paste0(friendly_db_name, "_server")),
+                          Database = Sys.getenv(paste0(friendly_db_name, "_db")),
+                          UID = Sys.getenv(paste0(friendly_db_name, "_username")),
+                          PWD = Sys.getenv(paste0(friendly_db_name, "_password")),
+                          Port = as.numeric(Sys.getenv(paste0(friendly_db_name, "ssms_port")))
+    )
+  }
+
+  # snowflake
+  else if (systyp == "snowflake") {
+    con <- DBI::dbConnect(odbc::odbc(),
+                          Driver = Sys.getenv("snowflake_driver"),
+                          Server = Sys.getenv(paste0(friendly_db_name, "_server")),
+                          Database = Sys.getenv(paste0(friendly_db_name, "_db")),
+                          UID = Sys.getenv(paste0(friendly_db_name, "_username")),
+                          PWD = Sys.getenv(paste0(friendly_db_name, "_password")),
+                          Warehouse = Sys.getenv(paste0(friendly_db_name, "_wh"))
     )
   }
 
@@ -44,9 +56,9 @@ get_db_con <- function(friendly_db_name) {
     )
 
     con <- ROracle::dbConnect(DBI::dbDriver("Oracle"),
-      dbname = connection_string,
-      username = Sys.getenv(paste0(friendly_db_name, "_username")),
-      password = Sys.getenv(paste0(friendly_db_name, "_password"))
+                              dbname = connection_string,
+                              username = Sys.getenv(paste0(friendly_db_name, "_username")),
+                              password = Sys.getenv(paste0(friendly_db_name, "_password"))
     )
   }
 
