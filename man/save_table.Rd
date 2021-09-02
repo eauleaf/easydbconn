@@ -4,12 +4,16 @@
 \alias{save_table}
 \title{Save a table to a database}
 \usage{
-save_table(df, tablename, friendly_db_name, replace_tbl = F)
+save_table(conn, df, tablename, replace_tbl = F)
 }
 \arguments{
+\item{conn}{connection to database}
+
 \item{df}{df to save}
 
-\item{friendly_db_name}{specify a database name; connection parameters retrieved for db in `get_db_con()`}
+\item{tablename}{character string to name the table in database}
+
+\item{replace_tbl}{boolean to replace or append to the database table named tablename}
 }
 \description{
 Save a table to a database

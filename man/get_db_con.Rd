@@ -5,12 +5,12 @@
 \title{Retrieves the db connection parameters and appropriate methods
 NOTE: the system environment variables need to already be set}
 \usage{
-get_db_con(friendly_db_name)
+get_db_con(friendly_db_name, schema = NULL)
 }
 \arguments{
 \item{friendly_db_name}{simple nickname for database}
 
-\item{query}{query text to send to db}
+\item{schema}{character string of name of schema to use (if applicable)}
 }
 \value{
 table from query

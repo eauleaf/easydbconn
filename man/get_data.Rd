@@ -4,24 +4,16 @@
 \alias{get_data}
 \title{Pass a query to a database and get a table back}
 \usage{
-get_data(
-  query,
-  friendly_db_name,
-  cast_as_tibble = TRUE,
-  simplify_dates = TRUE,
-  con = NULL
-)
+get_data(conn, query, cast_as_tibble = TRUE, simplify_dates = TRUE)
 }
 \arguments{
-\item{query}{a text query in quotes ('select * from tbl') or a network path to a saved sql query (/path/saved_query.sql)}
+\item{conn}{pass in connection string if created elsewhere (this is optional)}
 
-\item{friendly_db_name}{specify a database name; connection parameters retrieved for db in `get_db_con()`}
+\item{query}{a text query in quotes ('select * from tbl') or a network path to a saved sql query (/path/saved_query.sql)}
 
 \item{cast_as_tibble}{make the output a tibble}
 
 \item{simplify_dates}{transform all dates in returned table from datetime to just date}
-
-\item{con}{pass in connection string if created elsewhere (this is optional)}
 }
 \value{
 a table of data output specified by the query

@@ -1,44 +1,45 @@
 #' Save a table to a database
 #'
+#' @param conn connection to database
 #' @param df df to save
-#' @param friendly_db_name specify a database name; connection parameters retrieved for db in `get_db_con()`
+#' @param tablename character string to name the table in database
+#' @param replace_tbl boolean to replace or append to the database table named tablename
 #'
 #' @export
-save_table <- function(df,
-                       tablename,
-                       friendly_db_name,
-                       replace_tbl = F) {
+save_table <- function(conn
+                       ,df
+                       ,tablename
+                       ,replace_tbl = F
+) {
 
   ### for writing tables
   ##########################
-  if (is.null(df)) {
-    stop("No dataframe specified to save")
-  }
+  # if (is.null(df)) {
+  #   stop("No dataframe specified to save")
+  # }
 
   dur <- transfer_message_beg()
 
-  # get connection
-  con <- get_db_con(friendly_db_name)
+  # get connection if not passed in
+  # if(is.null(con)) con <- get_db_con(friendly_db_name, schema)
 
-  # determine if ssms or oracle
-  systyp <- Sys.getenv(paste0(friendly_db_name, "_systyp"))
+  # determine what database you're using (i.e. ssms, snowflake, oracle, etc)
+  systyp <- get_systyp(conn)
 
-  # msft sql server
-  if (systyp == "ssms") {
+  # msft sql server or snowflake
+  if (systyp %in% c("ssms", "microsoft sql server",
+                    "snowflake")) {
     if (replace_tbl) {
-      DBI::dbRemoveTable(conn = con, name = tablename)
+      pool::dbRemoveTable(conn = conn, name = tablename)
     }
-    DBI::dbWriteTable(con, tablename, df, append = T)
-    DBI::dbDisconnect(con)
+    pool::dbWriteTable(conn, tablename, df, append = T)
 
-    cat(glue::glue("---------Done Writing {df} to {friendly_db_name}---------\n"))
+
+    cat(glue::glue("---------Done Writing {tablename} to {systyp}---------\n"))
     transfer_message_end(dur)
   }
 
-  # TODO: implement snowflake when we can
-  # else if(systyp == "oracle"){
-  #
-  # }
+
 }
 
 # for testing

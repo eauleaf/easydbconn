@@ -1,6 +1,6 @@
 Package: easydbconn
 Title: Simplified Communication with Databases
-Version: 0.0.1.0003
+Version: 0.0.1.9004
 Authors@R:
     person("eau", "leaf", email = "eau.leaf@gmail.com", role = c("aut", "cre"))
 Description: Uses a primary function, get_data(), to generally query available
@@ -21,7 +21,8 @@ Imports:
     purrr (>= 0.3.4),
     stringr (>= 1.4.0),
     readr (>= 1.4.0),
-    Rcpp
+    Rcpp,
+    pool
 Suggests:
     testthat (>= 3.0.0),
     ROracle

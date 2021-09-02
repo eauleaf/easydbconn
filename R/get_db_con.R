@@ -1,12 +1,13 @@
 #' Retrieves the db connection parameters and appropriate methods
 #' NOTE: the system environment variables need to already be set
 #'
-#' @param query query text to send to db
 #' @param friendly_db_name simple nickname for database
+#' @param schema character string of name of schema to use (if applicable)
 #'
 #' @return table from query
 #'
 #' @import odbc
+#' @import pool
 #' @import DBI
 #'
 #' @export
@@ -19,29 +20,29 @@ get_db_con <- function(friendly_db_name, schema = NULL) {
 
   ### create connections
   # msft sql server
-  if (systyp == "ssms") {
-    con <- DBI::dbConnect(odbc::odbc(),
-                          Driver = Sys.getenv("ssms_driver"),
-                          Server = Sys.getenv(paste0(friendly_db_name, "_server")),
-                          Database = Sys.getenv(paste0(friendly_db_name, "_db")),
-                          UID = Sys.getenv(paste0(friendly_db_name, "_username")),
-                          PWD = Sys.getenv(paste0(friendly_db_name, "_password")),
-                          Port = as.numeric(Sys.getenv(paste0(friendly_db_name, "ssms_port")))
+  if (systyp %in% c("ssms", "microsoft sql server")) {
+    con <- pool::dbPool(odbc::odbc(),
+                        Driver = Sys.getenv("ssms_driver"),
+                        Server = Sys.getenv(paste0(friendly_db_name, "_server")),
+                        Database = Sys.getenv(paste0(friendly_db_name, "_db")),
+                        UID = Sys.getenv(paste0(friendly_db_name, "_username")),
+                        PWD = Sys.getenv(paste0(friendly_db_name, "_password")),
+                        Port = as.numeric(Sys.getenv(paste0(friendly_db_name, "ssms_port")))
     )
   }
 
   # snowflake
   else if (systyp == "snowflake") {
-    con <- DBI::dbConnect(odbc::odbc(),
-                          Driver = Sys.getenv("snowflake_driver"),
-                          Server = Sys.getenv(paste0(friendly_db_name, "_server")),
-                          Database = Sys.getenv(paste0(friendly_db_name, "_db")),
-                          UID = Sys.getenv(paste0(friendly_db_name, "_username")),
-                          PWD = Sys.getenv(paste0(friendly_db_name, "_password")),
-                          Warehouse = Sys.getenv(paste0(friendly_db_name, "_wh")),
-                          Schema = toupper(schema),
-                          LogLevel = 0,
-                          tracing = 0
+    con <- pool::dbPool(odbc::odbc(),
+                        Driver = Sys.getenv("snowflake_driver"),
+                        Server = Sys.getenv(paste0(friendly_db_name, "_server")),
+                        Database = Sys.getenv(paste0(friendly_db_name, "_db")),
+                        UID = Sys.getenv(paste0(friendly_db_name, "_username")),
+                        PWD = Sys.getenv(paste0(friendly_db_name, "_password")),
+                        Warehouse = Sys.getenv(paste0(friendly_db_name, "_wh")),
+                        Schema = toupper(schema),
+                        LogLevel = 0,
+                        tracing = 0
     )
   }
 

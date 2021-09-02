@@ -4,7 +4,10 @@
 \alias{transfer_message_beg}
 \title{Mark the beginning of a query to time the query duration}
 \usage{
-transfer_message_beg()
+transfer_message_beg(msg = "Beginning Process")
+}
+\arguments{
+\item{msg}{optional character message to include at the begging of a timed process}
 }
 \value{
 a proc.time() object that acts as input to transfer_message_end()

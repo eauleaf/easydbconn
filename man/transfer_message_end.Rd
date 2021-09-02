@@ -4,10 +4,12 @@
 \alias{transfer_message_end}
 \title{Displays when and how long a query took to retrieve}
 \usage{
-transfer_message_end(dur)
+transfer_message_end(dur, msg = "Process Complete")
 }
 \arguments{
 \item{dur}{a proc.time() object from transfer_message_beg()}
+
+\item{msg}{optional character message to include at the completion of a timed process}
 }
 \description{
 Displays when and how long a query took to retrieve

@@ -1,21 +1,21 @@
 #' Pass a query to a database and get a table back
 #'
+#' @param conn pass in connection string if created elsewhere (this is optional)
 #' @param query a text query in quotes ('select * from tbl') or a network path to a saved sql query (/path/saved_query.sql)
-#' @param friendly_db_name specify a database name; connection parameters retrieved for db in `get_db_con()`
 #' @param cast_as_tibble make the output a tibble
 #' @param simplify_dates transform all dates in returned table from datetime to just date
-#' @param con pass in connection string if created elsewhere (this is optional)
 #'
 #' @return a table of data output specified by the query
 #'
 #' @importFrom purrr modify_if
 #'
 #' @export
-get_data <- function(query,
-                     friendly_db_name,
-                     cast_as_tibble = TRUE,
-                     simplify_dates = TRUE,
-                     con = NULL) {
+get_data <- function(conn
+                     ,query
+                     ,cast_as_tibble = TRUE
+                     ,simplify_dates = TRUE
+
+) {
 
   # prep query
   cleaned_query <-
@@ -28,26 +28,22 @@ get_data <- function(query,
 
 
   # get connection (if not passed into function)
-  if(is.null(con)){
-    con <- get_db_con(friendly_db_name)
+  # if(is.null(con)){
+  #   con <- get_db_con(friendly_db_name)
 
-    # determine if ssms or oracle
-    systyp <- Sys.getenv(paste0(friendly_db_name, "_systyp"))
-
-  } else {
-    systyp <- con@info$dbms.name
-  }
+  # determine if ssms, snowflake, or oracle
+  systyp <- get_systyp(conn)
 
   ### query results
-  # msft sql server
-  if (systyp %in% c("ssms", "Microsoft SQL Server")) {
-    query_results <- DBI::dbGetQuery(con, query)
-    DBI::dbDisconnect(con)
+  # msft sql server and snowflake
+  if (systyp %in% c("ssms", "microsoft sql server",
+                    "snowflake")) {
+    query_results <- pool::dbGetQuery(conn, query)
   }
   # oracle
-  else if (systyp %in% c("oracle", "Oracle")) {
-    query_results <- ROracle::dbGetQuery(con, query)
-    ROracle::dbDisconnect(con)
+  else if (systyp %in% c("oracle")) {
+    query_results <- ROracle::dbGetQuery(conn, query)
+    ROracle::dbDisconnect(conn)
   }
 
   transfer_message_end(dur)
