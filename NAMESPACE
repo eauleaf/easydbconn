@@ -3,6 +3,7 @@
 export(clean_query)
 export(get_data)
 export(get_db_con)
+export(get_os)
 export(read_query)
 export(remove_table)
 export(save_table)

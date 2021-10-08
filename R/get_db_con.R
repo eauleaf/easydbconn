@@ -14,56 +14,67 @@
 #'
 get_db_con <- function(friendly_db_name, schema = NULL) {
 
-  # determine if ssms or oracle
-  systyp <- Sys.getenv(paste0(friendly_db_name, "_systyp"))
+  # use dns connections if on linux
+  curr_os <- get_os()
+
+  # currently windows requires using an .renviron
+  if(curr_os == "windows"){
+    # determine if ssms or oracle
+    systyp <- Sys.getenv(paste0(friendly_db_name, "_systyp"))
 
 
-  ### create connections
-  # msft sql server
-  if (systyp %in% c("ssms", "microsoft sql server")) {
-    con <- pool::dbPool(odbc::odbc(),
-                        Driver = Sys.getenv("ssms_driver"),
-                        Server = Sys.getenv(paste0(friendly_db_name, "_server")),
-                        Database = Sys.getenv(paste0(friendly_db_name, "_db")),
-                        UID = Sys.getenv(paste0(friendly_db_name, "_username")),
-                        PWD = Sys.getenv(paste0(friendly_db_name, "_password")),
-                        Port = as.numeric(Sys.getenv(paste0(friendly_db_name, "ssms_port")))
-    )
+    ### create connections
+    # msft sql server
+    if (systyp %in% c("ssms", "microsoft sql server")) {
+      con <- pool::dbPool(odbc::odbc(),
+                          Driver = Sys.getenv("ssms_driver"),
+                          Server = Sys.getenv(paste0(friendly_db_name, "_server")),
+                          Database = Sys.getenv(paste0(friendly_db_name, "_db")),
+                          UID = Sys.getenv(paste0(friendly_db_name, "_username")),
+                          PWD = Sys.getenv(paste0(friendly_db_name, "_password")),
+                          Port = as.numeric(Sys.getenv(paste0(friendly_db_name, "ssms_port")))
+      )
+    }
+
+    # snowflake
+    else if (systyp == "snowflake") {
+      con <- pool::dbPool(odbc::odbc(),
+                          Driver = Sys.getenv("snowflake_driver"),
+                          Server = Sys.getenv(paste0(friendly_db_name, "_server")),
+                          Database = Sys.getenv(paste0(friendly_db_name, "_db")),
+                          UID = Sys.getenv(paste0(friendly_db_name, "_username")),
+                          PWD = Sys.getenv(paste0(friendly_db_name, "_password")),
+                          Warehouse = Sys.getenv(paste0(friendly_db_name, "_wh")),
+                          Schema = toupper(schema),
+                          LogLevel = 0,
+                          tracing = 0
+      )
+    }
+
+    # oracle
+    else if (systyp == "oracle") {
+      host <- Sys.getenv(paste0(friendly_db_name, "_host"))
+      port <- Sys.getenv(paste0(friendly_db_name, "_port"))
+      sid <- Sys.getenv(paste0(friendly_db_name, "_sid"))
+
+      connection_string <- paste(
+        "(DESCRIPTION=",
+        "(ADDRESS=(PROTOCOL=tcp)(HOST=", host, ")(PORT=", port, "))",
+        "(CONNECT_DATA=(SID=", sid, ")))",
+        sep = ""
+      )
+
+      con <- ROracle::dbConnect(DBI::dbDriver("Oracle"),
+                                dbname = connection_string,
+                                username = Sys.getenv(paste0(friendly_db_name, "_username")),
+                                password = Sys.getenv(paste0(friendly_db_name, "_password"))
+      )
+    }
   }
 
-  # snowflake
-  else if (systyp == "snowflake") {
-    con <- pool::dbPool(odbc::odbc(),
-                        Driver = Sys.getenv("snowflake_driver"),
-                        Server = Sys.getenv(paste0(friendly_db_name, "_server")),
-                        Database = Sys.getenv(paste0(friendly_db_name, "_db")),
-                        UID = Sys.getenv(paste0(friendly_db_name, "_username")),
-                        PWD = Sys.getenv(paste0(friendly_db_name, "_password")),
-                        Warehouse = Sys.getenv(paste0(friendly_db_name, "_wh")),
-                        Schema = toupper(schema),
-                        LogLevel = 0,
-                        tracing = 0
-    )
-  }
-
-  # oracle
-  else if (systyp == "oracle") {
-    host <- Sys.getenv(paste0(friendly_db_name, "_host"))
-    port <- Sys.getenv(paste0(friendly_db_name, "_port"))
-    sid <- Sys.getenv(paste0(friendly_db_name, "_sid"))
-
-    connection_string <- paste(
-      "(DESCRIPTION=",
-      "(ADDRESS=(PROTOCOL=tcp)(HOST=", host, ")(PORT=", port, "))",
-      "(CONNECT_DATA=(SID=", sid, ")))",
-      sep = ""
-    )
-
-    con <- ROracle::dbConnect(DBI::dbDriver("Oracle"),
-                              dbname = connection_string,
-                              username = Sys.getenv(paste0(friendly_db_name, "_username")),
-                              password = Sys.getenv(paste0(friendly_db_name, "_password"))
-    )
+  # linux and macos that use the odbc.ini and odbcisnt.ini files
+  else {
+    con <- pool::dbPool(odbc::odbc(), dsn = friendly_db_name, schema =  toupper(schema))
   }
 
   return(con)
