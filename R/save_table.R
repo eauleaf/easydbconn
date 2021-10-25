@@ -11,36 +11,31 @@ save_table <- function(conn
                        ,tablename
                        ,replace_tbl = F
 ) {
-
-  ### for writing tables
-  ##########################
-  # if (is.null(df)) {
-  #   stop("No dataframe specified to save")
-  # }
-
   dur <- transfer_message_beg()
-
-  # get connection if not passed in
-  # if(is.null(con)) con <- get_db_con(friendly_db_name, schema)
-
-  # determine what database you're using (i.e. ssms, snowflake, oracle, etc)
   systyp <- get_systyp(conn)
 
-  # msft sql server or snowflake
-  if (systyp %in% c("ssms", "microsoft sql server",
-                    "snowflake")) {
-    if (replace_tbl) {
+  # determine what database you're using (i.e. ssms, snowflake, oracle, etc)
+  if (systyp %in% c("ssms", "microsoft sql server", "snowflake")) {
+    is_there <- pool::dbExistsTable(conn = conn, name = tablename)
+    if (replace_tbl & is_there) {
       pool::dbRemoveTable(conn = conn, name = tablename)
+      pool::dbCreateTable(conn = conn, name = tablename, fields = df)
+
+    } else if (!is_there) {
+      pool::dbCreateTable(conn = conn, name = tablename, fields = df)
     }
-    pool::dbWriteTable(conn, tablename, df, append = T)
+
+    split(df, rep(1:ceiling(nrow(df)/10000), length.out = nrow(df), each = 10000)) %>%
+      map(~pool::dbAppendTable(conn = conn, name = tablename, value = .))
 
 
     cat(glue::glue("---------Done Writing {tablename} to {systyp}---------\n"))
     transfer_message_end(dur)
+
+    return(T)
   }
-
-
 }
+
 
 # for testing
 # con <- easydbconn::get_db_con("my_db_name")
