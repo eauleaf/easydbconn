@@ -18,7 +18,7 @@ get_db_con <- function(friendly_db_name, schema = NULL) {
   curr_os <- get_os()
 
   # currently windows requires using an .renviron
-  if(curr_os == "windows"){
+  if(curr_os %in% c("windows","linux_renviron"){
     # determine if ssms or oracle
     systyp <- Sys.getenv(paste0(friendly_db_name, "_systyp"))
 

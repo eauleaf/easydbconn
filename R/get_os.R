@@ -7,7 +7,10 @@ get_os <- function(){
   sysinf <- Sys.info()
   if (!is.null(sysinf)){
     os <- sysinf['sysname']
-    if (os == 'Darwin')
+    # this need to change at some point
+    if(grepl("generic",sysinf['release']))
+      os <- 'linux_renviron'
+    else if (os == 'Darwin')
       os <- "osx"
   } else { ## mystery machine
     os <- .Platform$OS.type
@@ -15,9 +18,6 @@ get_os <- function(){
       os <- "osx"
     if (grepl("linux-gnu", R.version$os)){
       os <- "linux"
-      # this need to change at some point
-      if(grepl("generic",sysinf['release']))
-        os <- 'windows'
     }
   }
   tolower(os)
