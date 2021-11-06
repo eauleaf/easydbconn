@@ -1,6 +1,6 @@
 Package: easydbconn
 Title: Simplified Communication with Databases
-Version: 0.0.1.9007
+Version: 0.0.1.9008
 Authors@R:
     person("eau", "leaf", email = "eau.leaf@gmail.com", role = c("aut", "cre"))
 Description: Uses a primary function, get_data(), to generally query available
@@ -8,7 +8,7 @@ Description: Uses a primary function, get_data(), to generally query available
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Imports: 
     magrittr,
     dplyr,

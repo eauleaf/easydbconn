@@ -13,8 +13,14 @@ get_os <- function(){
     os <- .Platform$OS.type
     if (grepl("^darwin", R.version$os))
       os <- "osx"
-    if (grepl("linux-gnu", R.version$os))
+    if (grepl("linux-gnu", R.version$os)){
       os <- "linux"
+      # this need to change at some point
+      if(grepl("generic",sysinf['release']))
+        os <- 'windows'
+    }
   }
   tolower(os)
 }
+
+
