@@ -32,7 +32,7 @@ get_db_con <- function(friendly_db_name, schema = NULL) {
                           Database = Sys.getenv(paste0(friendly_db_name, "_db")),
                           UID = Sys.getenv(paste0(friendly_db_name, "_username")),
                           PWD = Sys.getenv(paste0(friendly_db_name, "_password")),
-                          Port = as.numeric(Sys.getenv(paste0(friendly_db_name, "ssms_port")))
+                          Port = as.numeric(Sys.getenv(paste0(friendly_db_name, "_port")))
       )
     }
 
